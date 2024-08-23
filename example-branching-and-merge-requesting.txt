@@ -1,0 +1,1 @@
+This is an example file for lecturing about git and branching and merge requests
