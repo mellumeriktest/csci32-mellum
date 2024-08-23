@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react'
 import { getSizeStyles, Size } from './size'
-import { getVariantBackgroundStyles, getVariantOutlineStyles, Variant } from './variant'
+import { getVariantBackgroundStyles, getVariantButtonTextStyles, getVariantOutlineStyles, Variant } from './variant'
 import { getCommonStyles } from './tokens'
 
 interface ButtonProps {
@@ -23,11 +23,12 @@ export const Button = ({
   variant = Variant.PRIMARY,
 }: ButtonProps) => {
   const sizeCssClasses = getSizeStyles(size)
+  const variantButtonTextCssClasses = getVariantButtonTextStyles(variant)
   const variantBackgroundCssClasses = getVariantBackgroundStyles(variant)
   const variantOutlineCssClasses = getVariantOutlineStyles(variant)
   const commonCssClasses = getCommonStyles()
 
-  const completedCssClasses = `${sizeCssClasses} ${variantBackgroundCssClasses}  ${variantOutlineCssClasses} ${commonCssClasses} ${className}`
+  const completedCssClasses = `${sizeCssClasses} ${variantBackgroundCssClasses}  ${variantOutlineCssClasses} ${commonCssClasses} ${variantButtonTextCssClasses} ${className}`
   return href ? (
     <a href={href} className={completedCssClasses}>
       {children}

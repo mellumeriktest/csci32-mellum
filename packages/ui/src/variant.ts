@@ -47,3 +47,14 @@ export function getVariantInputTextStyles(variant: Variant) {
       return 'text-black'
   }
 }
+
+export function getVariantButtonTextStyles(variant: Variant) {
+  switch (variant) {
+    case Variant.PRIMARY:
+      return 'text-white'
+    case Variant.SECONDARY:
+      return 'text-white'
+    case Variant.TERTIARY:
+      return 'text-white'
+  }
+}
