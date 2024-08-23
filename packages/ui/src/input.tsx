@@ -8,13 +8,19 @@ interface InputProps {
   size?: Size
   placeholder?: string
   type?: HTMLInputTypeAttribute
-  value: any
-  setValue: (newValue: any) => void
+  value?: any
+  setValue?: (newValue: any) => void
+  defaultValue?: any
+  name: string
+  id: string
 }
 export default function Input({
   variant = Variant.PRIMARY,
   size = Size.MEDIUM,
   value,
+  name,
+  id,
+  defaultValue,
   setValue,
   type = 'text',
   placeholder,
@@ -28,10 +34,13 @@ export default function Input({
   return (
     <input
       className={`${sizeCssClasses} ${variantBorderCssClasses} ${variantInputTextCssClasses} ${variantOutlineCssClasses} ${commonCssClasses}`}
+      name={name}
+      id={id}
+      defaultValue={defaultValue ?? undefined}
       placeholder={placeholder}
       type={type}
       value={value}
-      onChange={(newValue) => setValue(newValue.currentTarget.value)}
+      onChange={setValue ? (newValue) => setValue(newValue.currentTarget.value) : () => {}}
     />
   )
 }
