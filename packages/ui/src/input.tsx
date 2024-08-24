@@ -36,7 +36,7 @@ export default function Input({
       className={`${sizeCssClasses} ${variantBorderCssClasses} ${variantInputTextCssClasses} ${variantOutlineCssClasses} ${commonCssClasses}`}
       name={name}
       id={id}
-      defaultValue={defaultValue ?? undefined}
+      defaultValue={defaultValue}
       placeholder={placeholder}
       type={type}
       value={value}
