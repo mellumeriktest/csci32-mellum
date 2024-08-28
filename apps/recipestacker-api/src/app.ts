@@ -1,46 +1,75 @@
-import * as path from 'path'
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
-import { FastifyPluginAsync } from 'fastify'
-import { fileURLToPath } from 'url'
-import { swagger } from './swagger.js'
+// import Fastify, { FastifyPluginAsync } from 'fastify'
+// import { swagger } from './swagger'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import * as path from 'path'
+import { fileURLToPath } from 'url'
+import { createServer } from './server.js'
 
 export type AppOptions = {
   // Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>
 
-// Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {
-  options: {
-    logger: true,
-  },
+  options: {},
 }
 
-const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
-  // Place here your custom code!
+const fastify = createServer()
 
-  // Do not touch the following lines
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-  // This loads all plugins defined in plugins
-  // those should be support plugins that are reused
-  // through your application
-  void fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
-    options: opts,
-    forceESM: true,
-  })
+void fastify.register(AutoLoad, {
+  dir: path.join(__dirname, 'plugins'),
+  options,
+  forceESM: true,
+})
 
-  // This loads all plugins defined in routes
-  // define your routes in one of these
-  void fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
-    options: opts,
-    forceESM: true,
-  })
-  await swagger({ fastify })
+// This loads all plugins defined in routes
+// define your routes in one of these
+void fastify.register(AutoLoad, {
+  dir: path.join(__dirname, 'routes'),
+  options,
+  forceESM: true,
+})
+
+async function start() {
+  try {
+    await fastify.listen({
+      host: '127.0.0.1',
+      port: process.env.PORT ? Number(process.env.PORT) : 7000,
+    })
+  } catch (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
 }
 
-export default app
-export { app, options }
+start()
+
+// const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
+//   // Place here your custom code!
+
+//   // Do not touch the following lines
+
+//   // This loads all plugins defined in plugins
+//   // those should be support plugins that are reused
+//   // through your application
+//   void fastify.register(AutoLoad, {
+//     dir: path.join(__dirname, 'plugins'),
+//     options: opts,
+//     forceESM: true,
+//   })
+
+//   // This loads all plugins defined in routes
+//   // define your routes in one of these
+//   void fastify.register(AutoLoad, {
+//     dir: path.join(__dirname, 'routes'),
+//     options: opts,
+//     forceESM: true,
+//   })
+//   await swagger({ fastify })
+// }
+
+// export default app
+// export { app, options }

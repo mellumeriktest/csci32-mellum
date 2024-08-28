@@ -2,14 +2,14 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "sourceMap": true,
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "target": "ES2022",
-    "esModuleInterop": true,
-    "paths": {
-      "@": ["/src/*"]
-    }
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts"]
 }

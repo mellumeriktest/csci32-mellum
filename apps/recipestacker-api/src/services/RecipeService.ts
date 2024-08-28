@@ -10,7 +10,7 @@ export enum SortOrder {
 export const DEFAULT_TAKE = 15
 export const DEFAULT_SKIP = 15
 
-interface RecipeProps {
+interface RecipeServiceProps {
   logger: FastifyBaseLogger
 }
 
@@ -53,7 +53,7 @@ interface GetRecipeOrderByProps {
 export class RecipeService {
   logger: FastifyBaseLogger
 
-  constructor({ logger }: RecipeProps) {
+  constructor({ logger }: RecipeServiceProps) {
     this.logger = logger
   }
 
