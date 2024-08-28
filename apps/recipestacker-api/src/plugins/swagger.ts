@@ -1,7 +1,15 @@
-import { FastifyInstance } from 'fastify'
+import fastifySwagger, { FastifyDynamicSwaggerOptions } from '@fastify/swagger'
+import fastifySwaggerUi from '@fastify/swagger-ui'
+import fp from 'fastify-plugin'
+import sensible, { SensibleOptions } from '@fastify/sensible'
 
-export async function swagger({ fastify }: { fastify: FastifyInstance }) {
-  await fastify.register(require('@fastify/swagger'), {
+/**
+ * This plugins adds some utilities to handle http errors
+ *
+ * @see https://github.com/fastify/fastify-sensible
+ */
+export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
+  await fastify.register(fastifySwagger, {
     openapi: {
       openapi: '3.0.0',
       info: {
@@ -11,7 +19,7 @@ export async function swagger({ fastify }: { fastify: FastifyInstance }) {
       },
       servers: [
         {
-          url: 'http://localhost:5000',
+          url: 'http://localhost:7000',
           description: 'Development server',
         },
       ],
@@ -34,4 +42,5 @@ export async function swagger({ fastify }: { fastify: FastifyInstance }) {
       },
     },
   })
-}
+  await fastify.register(fastifySwaggerUi, { routePrefix: '/docs' })
+})

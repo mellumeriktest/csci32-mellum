@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client'
-import { prisma } from '@repo/recipestacker-database'
+
 import { FastifyBaseLogger } from 'fastify'
 
 export enum SortOrder {
@@ -12,6 +12,7 @@ export const DEFAULT_SKIP = 15
 
 interface RecipeServiceProps {
   logger: FastifyBaseLogger
+  prisma: PrismaClient
 }
 
 interface FindOneRecipeProps {
@@ -52,9 +53,11 @@ interface GetRecipeOrderByProps {
 
 export class RecipeService {
   logger: FastifyBaseLogger
+  prisma: PrismaClient
 
-  constructor({ logger }: RecipeServiceProps) {
+  constructor({ logger, prisma }: RecipeServiceProps) {
     this.logger = logger
+    this.prisma = prisma
   }
 
   getRecipeOrderBy({ sortColumn, sortOrder }: GetRecipeOrderByProps): Prisma.RecipeOrderByWithRelationInput {
@@ -66,7 +69,7 @@ export class RecipeService {
   findOneRecipe(props: FindOneRecipeProps) {
     this.logger.info({ props }, 'findOneRecipe')
     const { recipe_id } = props
-    return prisma.recipe.findFirst({
+    return this.prisma.recipe.findFirst({
       where: {
         recipe_id,
       },
@@ -77,7 +80,7 @@ export class RecipeService {
     this.logger.info({ props }, 'updateOneRecipe')
     const { recipe_id } = props
     const { ingredients, user_id, ...rest } = props
-    return prisma.recipe.update({
+    return this.prisma.recipe.update({
       where: {
         recipe_id,
       },
@@ -97,7 +100,7 @@ export class RecipeService {
     this.logger.info({ props }, 'findManyRecipes')
     const { name, sortColumn = 'name', sortOrder = SortOrder.ASC, take = DEFAULT_TAKE, skip = DEFAULT_SKIP } = props
     const orderBy = this.getRecipeOrderBy({ sortColumn, sortOrder })
-    return prisma.recipe.findMany({
+    return this.prisma.recipe.findMany({
       where: {
         name,
       },
@@ -110,7 +113,7 @@ export class RecipeService {
   createOneRecipe(props: CreateOneRecipeProps) {
     this.logger.info({ props }, 'createOneRecipe')
     const { ingredients, user_id, ...rest } = props
-    return prisma.recipe.create({
+    return this.prisma.recipe.create({
       data: {
         ...rest,
         user: {

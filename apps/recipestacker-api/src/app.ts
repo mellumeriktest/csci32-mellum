@@ -5,6 +5,7 @@ import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 import { createServer } from './server.js'
+import { swagger } from './swagger.js'
 
 export type AppOptions = {
   // Place your custom options for app below here.
