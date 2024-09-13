@@ -1,14 +1,15 @@
 import { Prisma, PrismaClient } from '@prisma/client'
+// import { capitalize } from 'lodash'
 
 import { FastifyBaseLogger } from 'fastify'
 
 export enum SortOrder {
-  ASC = 'ASC',
-  DESC = 'DESC',
+  ASC = 'asc',
+  DESC = 'desc',
 }
 
 export const DEFAULT_TAKE = 15
-export const DEFAULT_SKIP = 15
+export const DEFAULT_SKIP = 0
 
 interface RecipeServiceProps {
   logger: FastifyBaseLogger
@@ -27,23 +28,24 @@ interface FindManyRecipeProps {
   skip?: number
 }
 
+interface CreateIngredientMeasurementProps {
+  ingredient_id?: string
+  ingredient_name: string
+  unit: string
+  quantity: number
+}
+
 interface UpdateOneRecipeProps {
   recipe_id: string
   name: string
   description: string
-  user_id: string
-  ingredients: {
-    ingredient_id: string
-  }[]
+  ingredient_measurements: CreateIngredientMeasurementProps[]
 }
 
 interface CreateOneRecipeProps {
   name: string
   description: string
-  user_id: string
-  ingredients: {
-    ingredient_id: string
-  }[]
+  ingredient_measurements: CreateIngredientMeasurementProps[]
 }
 
 interface GetRecipeOrderByProps {
@@ -66,21 +68,30 @@ export class RecipeService {
     }
   }
 
-  findOneRecipe(props: FindOneRecipeProps) {
+  async findOneRecipe(props: FindOneRecipeProps) {
     this.logger.info({ props }, 'findOneRecipe')
     const { recipe_id } = props
-    return this.prisma.recipe.findFirst({
+    const recipe = await this.prisma.recipe.findFirst({
       where: {
         recipe_id,
       },
+      include: {
+        ingredient_measurements: {
+          include: {
+            ingredient: true,
+          },
+        },
+      },
     })
+    return recipe
   }
 
-  updateOneRecipe(props: UpdateOneRecipeProps) {
+  async updateOneRecipe(props: UpdateOneRecipeProps) {
     this.logger.info({ props }, 'updateOneRecipe')
     const { recipe_id } = props
-    const { ingredients, user_id, ...rest } = props
-    return this.prisma.recipe.update({
+    const user_id = 'cm0yz7qp90000zpovyy5p6sjy'
+    const { ingredient_measurements, ...rest } = props
+    const updatedRecipe = await this.prisma.recipe.update({
       where: {
         recipe_id,
       },
@@ -89,40 +100,98 @@ export class RecipeService {
         user: {
           connect: { user_id },
         },
-        ingredients: {
-          connect: ingredients,
+        ingredient_measurements: {
+          upsert: ingredient_measurements.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
+            where: {
+              ingredient_id_recipe_id:
+                ingredient_id && recipe_id
+                  ? {
+                      ingredient_id,
+                      recipe_id,
+                    }
+                  : undefined,
+            },
+            update: {
+              ingredient_id_recipe_id: {
+                ingredient_id,
+                recipe_id,
+              },
+              quantity,
+              unit,
+            },
+            create: {
+              ingredient: {
+                connectOrCreate: {
+                  where: { ingredient_id },
+                  create: {
+                    // name: capitalize(ingredient_name),
+                    name: ingredient_name,
+                  },
+                },
+              },
+              quantity,
+              unit,
+            },
+          })),
         },
       },
     })
+    return updatedRecipe
   }
 
-  findManyRecipes(props: FindManyRecipeProps) {
+  async findManyRecipes(props: FindManyRecipeProps) {
     this.logger.info({ props }, 'findManyRecipes')
     const { name, sortColumn = 'name', sortOrder = SortOrder.ASC, take = DEFAULT_TAKE, skip = DEFAULT_SKIP } = props
     const orderBy = this.getRecipeOrderBy({ sortColumn, sortOrder })
-    return this.prisma.recipe.findMany({
+    const recipes = await this.prisma.recipe.findMany({
       where: {
         name,
       },
       orderBy,
       take,
       skip,
-    })
-  }
-
-  createOneRecipe(props: CreateOneRecipeProps) {
-    this.logger.info({ props }, 'createOneRecipe')
-    const { ingredients, user_id, ...rest } = props
-    return this.prisma.recipe.create({
-      data: {
-        ...rest,
-        user: {
-          connect: { user_id },
-        },
-        ingredients: {
-          connect: ingredients,
+      include: {
+        ingredient_measurements: {
+          include: {
+            ingredient: true,
+          },
         },
       },
     })
+    return recipes
+  }
+
+  async createOneRecipe(props: CreateOneRecipeProps) {
+    this.logger.info({ props }, 'createOneRecipe')
+    const user_id = 'cm0yz7qp90000zpovyy5p6sjy'
+    const { ingredient_measurements, ...rest } = props
+    const newRecipe = await this.prisma.recipe
+      .create({
+        data: {
+          ...rest,
+          user: {
+            connect: { user_id },
+          },
+          ingredient_measurements: {
+            create: ingredient_measurements.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
+              ingredient: ingredient_id
+                ? {
+                    create: {
+                      name: ingredient_name,
+                    },
+                  }
+                : {
+                    connect: {
+                      ingredient_id,
+                    },
+                  },
+              quantity,
+              unit,
+            })),
+          },
+        },
+      })
+      .catch((err) => this.logger.error({ err }, 'Error creating recipe'))
+    return newRecipe
   }
 }

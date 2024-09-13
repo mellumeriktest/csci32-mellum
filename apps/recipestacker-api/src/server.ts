@@ -1,6 +1,9 @@
 import Fastify, { FastifyInstance } from 'fastify'
+import dotenv from 'dotenv'
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 export function createServer(): FastifyInstance {
+  dotenv.config()
   const fastify = Fastify({
     logger: {
       transport:
@@ -17,17 +20,7 @@ export function createServer(): FastifyInstance {
     // ajv: getAjvConfig() // from KM
     // querystringParser: (str: any) => qs.parse(str),
     // ignoreTrailingSlash: true,
-  })
-
-  // .withTypeProvider<TypeBoxTypeProvider>()
-  //   void fastify.register(AutoLoad, {
-  //   dir: path.join(__dirname, 'plugins'),
-  //   options: opts,
-  //   forceESM: true,
-  // })
-
-  // This loads all plugins defined in routes
-  // define your routes in one of these
+  }).withTypeProvider<TypeBoxTypeProvider>()
 
   // fastify.register(/* autoloads */)
   // fastify.register(/* autoloads */)

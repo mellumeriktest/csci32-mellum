@@ -19,7 +19,7 @@ export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
       },
       servers: [
         {
-          url: 'http://localhost:7000',
+          url: 'http://127.0.0.1:7000',
           description: 'Development server',
         },
       ],
@@ -29,11 +29,11 @@ export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
       ],
       components: {
         securitySchemes: {
-          apiKey: {
-            type: 'apiKey',
-            name: 'apiKey',
-            in: 'header',
-          },
+          // apiKey: {
+          //   type: 'apiKey',
+          //   name: 'apiKey',
+          //   in: 'header',
+          // },
         },
       },
       externalDocs: {
@@ -41,6 +41,7 @@ export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
         description: 'Find more info here',
       },
     },
+    hideUntagged: true,
   })
   await fastify.register(fastifySwaggerUi, { routePrefix: '/docs' })
 })
