@@ -13,8 +13,8 @@ export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
     openapi: {
       openapi: '3.0.0',
       info: {
-        title: 'Test swagger',
-        description: 'Testing the Fastify swagger API',
+        title: 'Recipestacker API',
+        description: 'An API for creating and searching recipes.',
         version: '0.1.0',
       },
       servers: [
