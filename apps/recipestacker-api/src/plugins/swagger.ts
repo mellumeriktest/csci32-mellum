@@ -23,10 +23,6 @@ export default fp<FastifyDynamicSwaggerOptions>(async (fastify) => {
           description: 'Development server',
         },
       ],
-      tags: [
-        { name: 'user', description: 'User related end-points' },
-        { name: 'code', description: 'Code related end-points' },
-      ],
       components: {
         securitySchemes: {
           // apiKey: {

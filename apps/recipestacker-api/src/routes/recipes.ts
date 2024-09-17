@@ -45,10 +45,9 @@ export const CreateRecipeTypeBoxType = Type.Object({
 })
 
 export const UpdateRecipeTypeBoxType = Type.Object({
-  recipe_id: Type.String(),
-  name: Type.String(),
-  description: Type.String(),
-  ingredient_measurements: Type.Array(UpsertIngredientMeasurementTypeBoxType),
+  name: Type.Optional(Type.String()),
+  description: Type.Optional(Type.String()),
+  ingredient_measurements: Type.Optional(Type.Array(UpsertIngredientMeasurementTypeBoxType)),
 })
 
 export const RecipeType = Type.Object({
@@ -64,8 +63,8 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     '/recipes',
     {
       schema: {
-        tags: ['recipes'],
-        description: 'Get all recipes',
+        tags: ['Endpoint: Get all recipes'],
+        description: 'Endpoint: Get all recipes',
         response: {
           200: Type.Array(RecipeType),
           404: RecipeNotFoundType,
@@ -91,8 +90,8 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     '/recipes/:id',
     {
       schema: {
-        tags: ['recipes'],
-        description: 'Get one recipe',
+        tags: ['Endpoint: Get one recipe'],
+        description: 'Endpoint: Get one recipe',
         response: {
           200: RecipeType,
           404: RecipeNotFoundType,

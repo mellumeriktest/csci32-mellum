@@ -101,7 +101,7 @@ export class RecipeService {
           connect: { user_id },
         },
         ingredient_measurements: {
-          upsert: ingredient_measurements.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
+          upsert: ingredient_measurements?.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
             where: {
               ingredient_id_recipe_id:
                 ingredient_id && recipe_id
