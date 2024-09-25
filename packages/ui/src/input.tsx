@@ -1,5 +1,5 @@
 import { getInputSizeStyles, Size } from './size'
-import { HTMLInputTypeAttribute } from 'react'
+import { HTMLInputTypeAttribute, useState } from 'react'
 import { getVariantBorderStyles, getVariantInputTextStyles, getVariantOutlineStyles, Variant } from './variant'
 import { getCommonStyles } from './tokens'
 
@@ -9,7 +9,7 @@ interface InputProps {
   placeholder?: string
   type?: HTMLInputTypeAttribute
   value?: any
-  setValue?: (newValue: any) => void
+  onChange?: (newValue: any) => void
   defaultValue?: any
   name: string
   id: string
@@ -21,10 +21,11 @@ export default function Input({
   name,
   id,
   defaultValue,
-  setValue,
+  onChange,
   type = 'text',
   placeholder,
 }: InputProps) {
+  const [internalValue, setInternalValue] = useState(value)
   const sizeCssClasses = getInputSizeStyles(size)
   const variantOutlineCssClasses = getVariantOutlineStyles(variant)
   const variantBorderCssClasses = getVariantBorderStyles(variant)
@@ -39,8 +40,8 @@ export default function Input({
       defaultValue={defaultValue}
       placeholder={placeholder}
       type={type}
-      value={value}
-      onChange={setValue ? (newValue) => setValue(newValue.currentTarget.value) : () => {}}
+      value={internalValue}
+      onChange={onChange ? (newValue) => onChange(newValue.currentTarget.value) : () => {}}
     />
   )
 }
