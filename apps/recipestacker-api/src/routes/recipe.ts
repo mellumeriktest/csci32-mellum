@@ -2,7 +2,7 @@ import Fastify, { FastifyPluginAsync } from 'fastify'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from '@sinclair/typebox'
 
-export const CreateIngredientMeasurementTypeboxType = Type.Object({
+export const UpsertIngredientMeasurementTypeboxType = Type.Object({
   unit: Type.String(),
   quantity: Type.Number(),
   ingredient_id: Type.Optional(Type.String()),
@@ -10,10 +10,16 @@ export const CreateIngredientMeasurementTypeboxType = Type.Object({
   ingredient_description: Type.Optional(Type.String()),
 })
 
+export const UpdateRecipeTypeboxType = Type.Object({
+  name: Type.Optional(Type.String()),
+  description: Type.Optional(Type.String()),
+  ingredient_measurement: Type.Optional(Type.Array(UpsertIngredientMeasurementTypeboxType)),
+})
+
 export const CreateRecipeTypeboxType = Type.Object({
   name: Type.String(),
   description: Type.String(),
-  ingredient_measurements: Type.Array(CreateIngredientMeasurementTypeboxType),
+  ingredient_measurements: Type.Array(UpsertIngredientMeasurementTypeboxType),
 })
 
 export const IngredientMeasurementTypeboxType = Type.Object({
@@ -60,6 +66,28 @@ const recipe: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         sortOrder: request.query.sortOrder,
         take: request.query.take,
         skip: request.query.skip,
+      })
+    },
+  )
+  fastify.withTypeProvider<TypeBoxTypeProvider>().put(
+    '/recipes/:id',
+    {
+      schema: {
+        tags: ['Endpoint: Update a recipe'],
+        description: 'Endpoint to update a recipe',
+        body: UpdateRecipeTypeboxType,
+        response: {
+          200: Type.Object({ recipe_id: Type.String() }),
+          400: Type.Object({ message: Type.String() }),
+        },
+      },
+    },
+    async function (request: any, reply) {
+      return fastify.recipeService.updateOneRecipe({
+        recipe_id: request.params.id,
+        name: request.body.name,
+        description: request.body.description,
+        ingredient_measurements: request.body.ingredient_measurements,
       })
     },
   )
