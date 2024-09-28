@@ -45,13 +45,11 @@ const recipe: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     '/recipes',
     {
       schema: {
-        schema: {
-          tags: ['Endpoint: Get all recipes'],
-          description: 'Endpoint to get all recipes',
-          response: {
-            200: Type.Array(RecipeType),
-            404: RecipeNotFoundType,
-          },
+        tags: ['Endpoint: Get all recipes'],
+        description: 'Endpoint to get all recipes',
+        response: {
+          200: Type.Array(RecipeType),
+          404: RecipeNotFoundType,
         },
       },
     },
@@ -62,6 +60,24 @@ const recipe: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         sortOrder: request.query.sortOrder,
         take: request.query.take,
         skip: request.query.skip,
+      })
+    },
+  )
+  fastify.withTypeProvider<TypeBoxTypeProvider>().get(
+    '/recipes/:id',
+    {
+      schema: {
+        tags: ['Endpoint: Get one recipe'],
+        description: 'Endpoint to get one recipe',
+        response: {
+          200: RecipeType,
+          404: RecipeNotFoundType,
+        },
+      },
+    },
+    async function (request: any, reply) {
+      return fastify.recipeService.findOneRecipe({
+        recipe_id: request.params.id,
       })
     },
   )

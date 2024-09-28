@@ -14,7 +14,9 @@ interface RecipeServiceProps {
   prisma: PrismaClient
 }
 
-interface FindOneRecipeProps {}
+interface FindOneRecipeProps {
+  recipe_id: string
+}
 
 interface FindManyRecipeProps {
   name?: string
@@ -66,7 +68,22 @@ export class RecipeService {
     }
   }
 
-  async findOneRecipe({}: FindOneRecipeProps) {}
+  async findOneRecipe(props: FindOneRecipeProps) {
+    this.logger.info({ props }, 'findOneRecipe')
+    const { recipe_id } = props
+    return this.prisma.recipe.findFirst({
+      where: {
+        recipe_id,
+      },
+      include: {
+        ingredient_measurements: {
+          include: {
+            ingredient: true,
+          },
+        },
+      },
+    })
+  }
 
   async updateOneRecipe(props: UpdateOneRecipeProps) {}
 
