@@ -3,8 +3,8 @@ import cors from '@fastify/cors'
 
 export default fp(async (fastify, opts) => {
   await fastify.register(cors, {
-    origin: true,
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Accept', 'Content-Type', 'Authorization'],
-    methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
+    // allowedHeaders: ['Origin', 'X-Requested-With', 'Accept', 'Content-Type', 'Authorization'],
+    // methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
   })
 })

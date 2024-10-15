@@ -89,7 +89,7 @@ export class RecipeService {
   async updateOneRecipe(props: UpdateOneRecipeProps) {
     this.logger.info({ props }, 'updateOneRecipe')
     const { recipe_id } = props
-    const user_id = 'cm0yz7qp90000zpovyy5p6sjy'
+    const user_id = 'cm2awd8i40000tzdryvp8a7mq'
     const { ingredient_measurements, ...rest } = props
     const updatedRecipe = await this.prisma.recipe.update({
       where: {
@@ -163,26 +163,34 @@ export class RecipeService {
 
   async createOneRecipe(props: CreateOneRecipeProps) {
     this.logger.info({ props }, 'createOneRecipe')
-    const user_id = 'cm0yz7qp90000zpovyy5p6sjy'
+    console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)
+    const user_id = 'cm2awd8i40000tzdryvp8a7mq'
+    const users = await this.prisma.user.findMany({
+      where: {
+        user_id,
+      },
+    })
+    console.log(
+      'users',
+      users.map((user) => user.user_id),
+    )
     const { ingredient_measurements, ...rest } = props
     const newRecipe = await this.prisma.recipe
       .create({
         data: {
           ...rest,
-          user: {
-            connect: { user_id },
-          },
+          user_id,
           ingredient_measurements: {
             create: ingredient_measurements.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
               ingredient: ingredient_id
                 ? {
-                    create: {
-                      name: ingredient_name,
+                    connect: {
+                      ingredient_id,
                     },
                   }
                 : {
-                    connect: {
-                      ingredient_id,
+                    create: {
+                      name: ingredient_name,
                     },
                   },
               quantity,
