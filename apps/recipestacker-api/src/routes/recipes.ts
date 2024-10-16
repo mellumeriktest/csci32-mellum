@@ -23,7 +23,8 @@ export const RecipeNotFoundType = Type.Object({
 
 export const UpsertIngredientMeasurementTypeBoxType = Type.Object({
   ingredient_id: Type.Optional(Type.String()),
-  ingredient_name: Type.String(),
+  ingredient_name: Type.Optional(Type.String()),
+  ingredient_description: Type.Optional(Type.String()),
   unit: Type.String(),
   quantity: Type.Number(),
 })
@@ -48,6 +49,7 @@ export const UpdateRecipeTypeBoxType = Type.Object({
   name: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
   ingredient_measurements: Type.Optional(Type.Array(UpsertIngredientMeasurementTypeBoxType)),
+  delete: Type.Optional(Type.Boolean()),
 })
 
 export const RecipeType = Type.Object({
@@ -74,6 +76,7 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     async function (request: any, reply) {
       const recipes = await fastify.recipeService.findManyRecipes({
         name: request.query.name,
+        ingredients: request.query.ingredients,
         sortColumn: request.query.sortColumn,
         sortOrder: request.query.sortOrder,
         take: request.query.take,
@@ -144,6 +147,7 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         name: request.body.name,
         description: request.body.description,
         ingredient_measurements: request.body.ingredient_measurements,
+        is_deleted: request.body.delete,
       })
     },
   )

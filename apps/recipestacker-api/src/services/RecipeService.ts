@@ -22,6 +22,7 @@ interface FindOneRecipeProps {
 
 interface FindManyRecipeProps {
   name: string
+  ingredients: string
   sortColumn?: string
   sortOrder?: SortOrder
   take?: number
@@ -30,7 +31,8 @@ interface FindManyRecipeProps {
 
 interface CreateIngredientMeasurementProps {
   ingredient_id?: string
-  ingredient_name: string
+  ingredient_name?: string
+  ingredient_description?: string
   unit: string
   quantity: number
 }
@@ -40,6 +42,7 @@ interface UpdateOneRecipeProps {
   name: string
   description: string
   ingredient_measurements: CreateIngredientMeasurementProps[]
+  is_deleted: boolean
 }
 
 interface CreateOneRecipeProps {
@@ -74,6 +77,7 @@ export class RecipeService {
     const recipe = await this.prisma.recipe.findFirst({
       where: {
         recipe_id,
+        is_deleted: false,
       },
       include: {
         ingredient_measurements: {
@@ -88,9 +92,8 @@ export class RecipeService {
 
   async updateOneRecipe(props: UpdateOneRecipeProps) {
     this.logger.info({ props }, 'updateOneRecipe')
-    const { recipe_id } = props
-    const user_id = 'cm2awd8i40000tzdryvp8a7mq'
-    const { ingredient_measurements, ...rest } = props
+    const spoof_user_id = 'cm2ax2evx0000gy1rfmgkqeg2'
+    const { recipe_id, ingredient_measurements, ...rest } = props
     const updatedRecipe = await this.prisma.recipe.update({
       where: {
         recipe_id,
@@ -98,41 +101,39 @@ export class RecipeService {
       data: {
         ...rest,
         user: {
-          connect: { user_id },
+          connect: { user_id: spoof_user_id },
         },
         ingredient_measurements: {
-          upsert: ingredient_measurements?.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
-            where: {
-              ingredient_id_recipe_id:
-                ingredient_id && recipe_id
-                  ? {
-                      ingredient_id,
-                      recipe_id,
-                    }
-                  : undefined,
-            },
-            update: {
-              ingredient_id_recipe_id: {
-                ingredient_id,
-                recipe_id,
-              },
-              quantity,
-              unit,
-            },
-            create: {
-              ingredient: {
-                connectOrCreate: {
-                  where: { ingredient_id },
-                  create: {
-                    // name: capitalize(ingredient_name),
-                    name: ingredient_name,
-                  },
+          upsert: ingredient_measurements?.map(
+            ({ ingredient_id, quantity, unit, ingredient_name, ingredient_description }) => ({
+              where: {
+                ingredient_id_recipe_id: {
+                  ingredient_id: ingredient_id || '',
+                  recipe_id,
                 },
               },
-              quantity,
-              unit,
-            },
-          })),
+              update: {
+                quantity,
+                unit,
+              },
+              create: {
+                ingredient: ingredient_id
+                  ? {
+                      connect: {
+                        ingredient_id,
+                      },
+                    }
+                  : {
+                      create: {
+                        name: ingredient_name,
+                        description: ingredient_description,
+                      },
+                    },
+                unit,
+                quantity,
+              },
+            }),
+          ),
         },
       },
     })
@@ -141,11 +142,33 @@ export class RecipeService {
 
   async findManyRecipes(props: FindManyRecipeProps) {
     this.logger.info({ props }, 'findManyRecipes')
-    const { name, sortColumn = 'name', sortOrder = SortOrder.ASC, take = DEFAULT_TAKE, skip = DEFAULT_SKIP } = props
+    const {
+      name,
+      ingredients,
+      sortColumn = 'name',
+      sortOrder = SortOrder.ASC,
+      take = DEFAULT_TAKE,
+      skip = DEFAULT_SKIP,
+    } = props
+    const ingredientsArray = ingredients ? ingredients.split(',') : []
     const orderBy = this.getRecipeOrderBy({ sortColumn, sortOrder })
     const recipes = await this.prisma.recipe.findMany({
       where: {
-        name,
+        name: {
+          contains: name,
+        },
+        is_deleted: false,
+        AND: ingredientsArray.map((ingredient) => ({
+          ingredient_measurements: {
+            some: {
+              ingredient: {
+                name: {
+                  contains: ingredient,
+                },
+              },
+            },
+          },
+        })),
       },
       orderBy,
       take,
@@ -164,7 +187,7 @@ export class RecipeService {
   async createOneRecipe(props: CreateOneRecipeProps) {
     this.logger.info({ props }, 'createOneRecipe')
     console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)
-    const user_id = 'cm2awd8i40000tzdryvp8a7mq'
+    const user_id = 'cm2ax2evx0000gy1rfmgkqeg2'
     const users = await this.prisma.user.findMany({
       where: {
         user_id,

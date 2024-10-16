@@ -29,10 +29,11 @@ CREATE TABLE `Recipe` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `_IngredientToRecipe` (
-    `A` VARCHAR(191) NOT NULL,
-    `B` VARCHAR(191) NOT NULL,
+CREATE TABLE `IngredientMeasurement` (
+    `ingredient_id` VARCHAR(191) NOT NULL,
+    `recipe_id` VARCHAR(191) NOT NULL,
+    `unit` VARCHAR(191) NOT NULL,
+    `quantity` INTEGER NOT NULL DEFAULT 0,
 
-    UNIQUE INDEX `_IngredientToRecipe_AB_unique`(`A`, `B`),
-    INDEX `_IngredientToRecipe_B_index`(`B`)
+    PRIMARY KEY (`ingredient_id`, `recipe_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
