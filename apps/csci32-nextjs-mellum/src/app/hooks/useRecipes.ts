@@ -21,33 +21,29 @@ export type UpdateRecipeProps = {
   description?: string
 }
 
-async function postHelper({ path, params }: { path: string; params: CreateRecipeProps }) {
-  return fetch(`http://127.0.0.1:7000${path}`, {
+async function postHelper({ path, body }: { path: string; body: string }) {
+  return fetch(`${process.env.API_URL}${path}`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    body,
     headers: {
-      'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
   })
 }
 
 async function putHelper({ path, params }: { path: string; params: UpdateRecipeProps }) {
-  return fetch(`http://127.0.0.1:7000${path}`, {
+  return fetch(`${process.env.API_URL}${path}`, {
     method: 'PUT',
     body: JSON.stringify(params),
     headers: {
-      'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
   })
 }
 
 async function fetcher({ path, urlParams }: { path: string; urlParams?: string }) {
-  const res = await fetch(`http://127.0.0.1:7000${path}${urlParams ? `?${urlParams}` : ''}`, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
+  const res = await fetch(`${process.env.API_URL}${path}${urlParams ? `?${urlParams}` : ''}`, {
+    headers: {},
   })
   return res.json()
 }
@@ -71,7 +67,7 @@ export function getRecipe(recipe_id: string) {
 }
 
 export function createRecipe(params: CreateRecipeProps) {
-  return postHelper({ path: '/recipes', params })
+  return postHelper({ path: '/recipes', body: JSON.stringify(params) })
 }
 
 export function deleteRecipe(recipe_id: string) {
