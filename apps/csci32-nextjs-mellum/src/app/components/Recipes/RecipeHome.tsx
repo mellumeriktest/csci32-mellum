@@ -14,7 +14,7 @@ export default function RecipeHome() {
   return (
     <Wrapper>
       <Flex className=" items-center w-full justify-between">
-        <Header variant="h1">Recipe Home</Header>
+        <Header variant="h1">Welcome to RecipeStacker</Header>
         <Button
           variant={Variant.TERTIARY}
           onClick={() => {
@@ -26,7 +26,7 @@ export default function RecipeHome() {
         </Button>
       </Flex>
 
-      <Flex className="flex-col gap-y-8">
+      <Flex className="flex-col gap-y-8 mt-8">
         {showRecipeForm ? (
           <RecipeForm />
         ) : (

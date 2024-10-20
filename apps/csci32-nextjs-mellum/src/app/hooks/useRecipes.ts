@@ -22,29 +22,34 @@ export type UpdateRecipeProps = {
 }
 
 async function postHelper({ path, body }: { path: string; body: string }) {
-  return fetch(`${process.env.API_URL}${path}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_RECIPESTACKER_API_URL}${path}`, {
     method: 'POST',
     body,
     headers: {
+      'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
   })
 }
 
 async function putHelper({ path, params }: { path: string; params: UpdateRecipeProps }) {
-  return fetch(`${process.env.API_URL}${path}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_RECIPESTACKER_API_URL}${path}`, {
     method: 'PUT',
     body: JSON.stringify(params),
     headers: {
+      'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
   })
 }
 
 async function fetcher({ path, urlParams }: { path: string; urlParams?: string }) {
-  const res = await fetch(`${process.env.API_URL}${path}${urlParams ? `?${urlParams}` : ''}`, {
-    headers: {},
-  })
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_RECIPESTACKER_API_URL}${path}${urlParams ? `?${urlParams}` : ''}`,
+    {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    },
+  )
   return res.json()
 }
 
