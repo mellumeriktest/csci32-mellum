@@ -1,5 +1,11 @@
 'use client'
 
+import { RecipeProvider } from '@/context/RecipeContext'
+
 export default function Home() {
-  return <div>🚧 Recipestacker under construction. 🚧</div>
+  return (
+    <RecipeProvider>
+      <div>🚧 Recipestacker under construction. 🚧</div>
+    </RecipeProvider>
+  )
 }
