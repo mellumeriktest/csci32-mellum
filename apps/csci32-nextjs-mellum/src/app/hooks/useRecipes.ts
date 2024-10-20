@@ -9,7 +9,7 @@ export type CreateRecipeProps = {
 }
 
 async function postHelper({ path, body }: { path: string; body: string }) {
-  return fetch(`${process.env.API_URL}${path}`, {
+  return fetch(`${process.env.NEXT_PUBLIC_RECIPESTACKER_API_URL}${path}`, {
     method: 'POST',
     body,
     headers: {

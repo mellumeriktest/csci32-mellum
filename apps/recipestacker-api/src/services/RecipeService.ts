@@ -176,13 +176,13 @@ export class RecipeService {
             create: ingredient_measurements.map(({ ingredient_id, quantity, unit, ingredient_name }) => ({
               ingredient: ingredient_id
                 ? {
-                    create: {
-                      name: ingredient_name,
+                    connect: {
+                      ingredient_id,
                     },
                   }
                 : {
-                    connect: {
-                      ingredient_id,
+                    create: {
+                      name: ingredient_name,
                     },
                   },
               quantity,
