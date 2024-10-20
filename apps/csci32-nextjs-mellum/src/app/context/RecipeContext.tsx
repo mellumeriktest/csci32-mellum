@@ -11,7 +11,7 @@ const RecipeContext = createContext<RecipeContextType>({
 })
 
 const RecipeProvider = ({ children }: { children: ReactNode }) => {
-  const [showRecipeForm, setShowRecipeForm] = useState(false)
+  const [showRecipeForm, setShowRecipeForm] = useState(true)
 
   return (
     <RecipeContext.Provider
