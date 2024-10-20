@@ -3,13 +3,14 @@
 import { ReactNode } from 'react'
 import { getSizeStyles, Size } from './size'
 import { getVariantBackgroundStyles, getVariantButtonTextStyles, getVariantOutlineStyles, Variant } from './variant'
-import { getCommonStyles } from './tokens'
+import { getCommonButtonStyles } from './tokens'
 
 interface ButtonProps {
   children: ReactNode
   className?: string
   href?: string
   onClick?: () => void
+  type?: 'button' | 'submit' | 'reset'
   size?: Size
   variant?: Variant
 }
@@ -18,6 +19,7 @@ export const Button = ({
   children,
   className,
   href,
+  type = 'button',
   onClick,
   size = Size.MEDIUM,
   variant = Variant.PRIMARY,
@@ -26,7 +28,7 @@ export const Button = ({
   const variantButtonTextCssClasses = getVariantButtonTextStyles(variant)
   const variantBackgroundCssClasses = getVariantBackgroundStyles(variant)
   const variantOutlineCssClasses = getVariantOutlineStyles(variant)
-  const commonCssClasses = getCommonStyles()
+  const commonCssClasses = getCommonButtonStyles()
 
   const completedCssClasses = `${sizeCssClasses} ${variantBackgroundCssClasses}  ${variantOutlineCssClasses} ${commonCssClasses} ${variantButtonTextCssClasses} ${className}`
   return href ? (
@@ -34,7 +36,7 @@ export const Button = ({
       {children}
     </a>
   ) : (
-    <button className={completedCssClasses} onClick={onClick}>
+    <button className={completedCssClasses} onClick={onClick} type={type}>
       {children}
     </button>
   )

@@ -34,6 +34,7 @@ model Recipe {
   ingredient_measurements IngredientMeasurement[]
   user User @relation(fields: [user_id], references: [user_id])
   user_id  String
+  is_deleted Boolean @default(false)
 }
 
 model IngredientMeasurement {
@@ -44,14 +45,4 @@ model IngredientMeasurement {
   recipe_id String
   unit String
   quantity Int @default(0)
-}
-
-
-model Node {
-  node_id String @id @default(cuid())
-  name  String?
-  description String?
-  parent_id String?
-  parent Node? @relation("NodeToNode", fields: [parent_id], references: [node_id], onDelete: NoAction, onUpdate: NoAction)
-  Node Node[] @relation("NodeToNode")
 }

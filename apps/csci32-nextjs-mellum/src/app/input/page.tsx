@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@repo/ui/button'
-import Input from '@repo/ui/input'
+import { Input } from '@repo/ui/input'
 import { Size } from '@repo/ui/size'
 import { Variant } from '@repo/ui/variant'
 import { useState } from 'react'
@@ -13,7 +13,7 @@ export default function ButtonPage() {
     <div className="p-24">
       <div className="flex gap-4 flex-wrap">
         <div className="flex gap-2">
-          <Input value={name} setValue={setName} size={Size.MEDIUM} variant={Variant.PRIMARY} name="name" id="name" />
+          <Input value={name} onChange={setName} size={Size.MEDIUM} variant={Variant.PRIMARY} name="name" id="name" />
           <Button onClick={() => alert(`Your name is: ${name}`)} size={Size.MEDIUM} variant={Variant.PRIMARY}>
             Name
           </Button>
@@ -21,7 +21,7 @@ export default function ButtonPage() {
         <div className="flex gap-2">
           <Input
             value={hobby}
-            setValue={setHobby}
+            onChange={setHobby}
             size={Size.MEDIUM}
             variant={Variant.SECONDARY}
             name="hobby"
@@ -32,7 +32,7 @@ export default function ButtonPage() {
           </Button>
         </div>
         <div className="flex gap-2">
-          <Input value={goal} setValue={setGoal} size={Size.MEDIUM} variant={Variant.TERTIARY} name="goal" id="goal" />
+          <Input value={goal} onChange={setGoal} size={Size.MEDIUM} variant={Variant.TERTIARY} name="goal" id="goal" />
           <Button onClick={() => alert(`Your goal is: ${goal}`)} size={Size.MEDIUM} variant={Variant.TERTIARY}>
             Goal
           </Button>
