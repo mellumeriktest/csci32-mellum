@@ -17,7 +17,7 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  recipes   Recipe[]
+  // recipes   Recipe[]
 }
 
 model Ingredient {
@@ -32,8 +32,8 @@ model Recipe {
   name  String?
   description String?
   ingredient_measurements IngredientMeasurement[]
-  user User @relation(fields: [user_id], references: [user_id])
-  user_id  String
+  // user User @relation(fields: [user_id], references: [user_id])
+  // user_id  String
   is_deleted Boolean @default(false)
 }
 

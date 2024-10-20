@@ -7,13 +7,14 @@ import { Flex } from '@repo/ui/flex'
 import { useContext } from 'react'
 import { Button } from '@repo/ui/button'
 import { Variant } from '@repo/ui/variant'
+import { Header } from '@repo/ui/header'
 
 export default function RecipeHome() {
   const { showRecipeForm, setShowRecipeForm, clearForm } = useContext(RecipeContext)
   return (
     <Wrapper>
       <Flex className=" items-center w-full justify-between">
-        <h1>Recipe Home</h1>
+        <Header variant="h1">Recipe Home</Header>
         <Button
           variant={Variant.TERTIARY}
           onClick={() => {

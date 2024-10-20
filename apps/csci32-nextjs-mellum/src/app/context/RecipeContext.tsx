@@ -2,12 +2,13 @@ import { createContext, useState, ReactNode, Provider } from 'react'
 import { deleteRecipe, useRecipes } from '../hooks/useRecipes'
 import { Recipe } from '@prisma/client'
 
+export type Ingredient = {
+  ingredient_id?: string
+  name: string
+  description: string
+}
 export type IngredientMeasurement = {
-  ingredient: {
-    ingredient_id?: string
-    name: string
-    description: string
-  }
+  ingredient: Ingredient
   unit: string
   quantity: string
 }
