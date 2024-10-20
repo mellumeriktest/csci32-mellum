@@ -1,4 +1,5 @@
 export enum Size {
+  XSMALL,
   SMALL,
   MEDIUM,
   LARGE,
@@ -6,6 +7,8 @@ export enum Size {
 
 export function getSizeStyles(size: Size) {
   switch (size) {
+    case Size.XSMALL:
+      return 'px-2 py-0.5 rounded shadow'
     case Size.SMALL:
       return 'px-4 py-1 rounded shadow'
     case Size.MEDIUM:
@@ -17,6 +20,8 @@ export function getSizeStyles(size: Size) {
 
 export function getInputSizeStyles(size: Size) {
   switch (size) {
+    case Size.XSMALL:
+      return 'px-2 py-0.5 rounded shadow'
     case Size.SMALL:
       return 'px-2 py-1 rounded shadow'
     case Size.MEDIUM:

@@ -16,6 +16,13 @@
     "./variant": "./src/variant.ts",
     "./code": "./src/code.tsx",
     "./input": "./src/input.tsx",
+    "./flex": "./src/flex.tsx",
+    "./field": "./src/field.tsx",
+    "./fieldGroup": "./src/fieldGroup.tsx",
+    "./header": "./src/header.tsx",
+    "./label": "./src/label.tsx",
+    "./wrapper": "./src/wrapper.tsx",
+    "./tag": "./src/tag.tsx",
     "./tokens": "./src/tokens.ts"
   },
   "scripts": {
