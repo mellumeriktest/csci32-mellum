@@ -5,7 +5,7 @@ export type HeaderProps = {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   className?: string
 }
-export function Header({ variant, children, className = '' }: HeaderProps) {
+export function Header({ variant = 'h2', children, className = '' }: HeaderProps) {
   return variant === 'h1' ? (
     <h1 className={classNames('text-4xl font-bold', className)}>{children}</h1>
   ) : variant === 'h2' ? (
